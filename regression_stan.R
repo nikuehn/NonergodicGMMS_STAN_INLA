@@ -10,6 +10,10 @@
 rm(list = ls())
 # load packages
 
+library(cmdstanr)
+library(posterior)
+library(bayesplot)
+
 # function definitions
 local.plot.field = function(field, mesh, xlim=c(0,10), ylim=c(0,10), ...){
   stopifnot(length(field) == mesh$n)
@@ -20,10 +24,6 @@ local.plot.field = function(field, mesh, xlim=c(0,10), ylim=c(0,10), ...){
   image.plot(list(x = proj$x, y=proj$y, z = field.proj), 
              xlim = xlim, ylim = ylim, col = plasma(n.col), nlevel=n.col+1)
 }
-
-library(cmdstanr)
-library(posterior)
-library(bayesplot)
 
 set_cmdstan_path('/Users/nico/GROUNDMOTION/SOFTWARE/cmdstan-2.26.1')
 cmdstan_path()
@@ -97,7 +97,7 @@ data_list <- list(N = dat_stan$NEQ,
                   theta = params$theta_eq,
                   Y = feq,
                   X = dat_stan$X_e,
-                  X_star = mesh_nodes[,c(1,2)]
+                  X_star = mesh_nodes[,c(2,1)]
 )
 
 fit_pred <- mod_pred$sample(
@@ -125,7 +125,7 @@ data_list <- list(N = dat_stan$NEQ,
                   Y = colMeans(feq),
                   psi = cov_feq,
                   X = dat_stan$X_e,
-                  X_star = mesh_nodes[,c(1,2)]
+                  X_star = mesh_nodes[,c(2,1)]
 )
 
 fit_pred2 <- mod_pred2$sample(
